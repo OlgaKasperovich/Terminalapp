@@ -61,9 +61,7 @@ function createTodo(data) {
     id: guid(),
     ...data,
     comment: null,
-    createdByUserId: ACCOUNT_ID,
     isLiked: false,
-    lastUpdateByUserId: ACCOUNT_ID,
 
   };
 }
