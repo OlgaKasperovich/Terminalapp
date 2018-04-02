@@ -193,31 +193,6 @@ program
       })
   });
 
-// program
-//   .command('read <id>')
-//   .alias('rd')
-//   .description('Read TODO item')
-//   .action((id) => {
-//     return fsOpen()
-//       .then((fd) => {
-//         return fsReadFile();
-//       })
-//       .then((data) => {
-//         return JSON.parse(data);
-//       })
-//       .then((obj) => {
-//         let result = obj.todos.find(el => el.id === id);
-//         if (!result) {
-//           console.log(`TODO item not found`);
-//         } else {
-//           console.log(result);
-//         }
-//       })
-//         .catch((error) => {
-//         console.error(`error: ${error}`);
-//       });
-//   });
-//
 
 program
   .command('update <id>')
