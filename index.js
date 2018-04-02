@@ -9,7 +9,7 @@ program
   .version('0.0.1')
   .description('This is a TODO application');
 
-const STORAGE_PATH = path.resolve('./node.json');
+const STORAGE_PATH = path.resolve('./todo.json');
 const ACCOUNT_ID = 1;
 const { O_APPEND, O_RDONLY, O_CREAT } = fs.constants;
 
@@ -26,9 +26,7 @@ function getAllTodos() {
       if (!jsonText) jsonText = '{}';
       return JSON.parse(jsonText).todos|| [];
     })
-    // .then((storage) => {
-    //   return storage.todos || [];
-    // });
+
 }
 
 function saveAllTodos(todos) {
@@ -114,46 +112,22 @@ function updateTodoItem(id, change) {
       const index = findTodoIndex(id, todos);
       const target = todos[index];
       const result = [...todos];
+      if (target != undefined) {
+        result.splice(index, 1, updateTodo(change, target));
+        console.log("Like status: " + result[index].isLiked);
+        return  saveAllTodos(result);
+      }else {
+        console.log('TODO item not found');
 
-      result.splice(index, 1, updateTodo(change, target));
-
-      return saveAllTodos(result);
-    })
-    .then(() => id);
-}
-
-//
-// function removeTodoItem(id) {
-//   return getAllTodos()
-//     .then((todos) => {
-//       const index = findTodoIndex(id, todos);
-//       const result = [...todos];
-//       const target = todos[index];
-//       if (target != undefined) {
-//         const removedItem = ((result.splice(index, 1))[0]);
-//         return saveAllTodos(result)
-//           .then (() => {
-//             return getAllRemovedTodos()
-//               .then((removedTodos) =>{
-//                 removedResult = [...removedTodos, removedItem]
-//                 return saveAllRemovedTodos(removedResult)
-//               })
-//               .then(() => 'Removed items: ' + removedResult.length)
-//           });
-//       }else{
-//         return 'TODO item not found';
-//       }
-//     })
-// }
-
-
-
+      };
+    });
+};
 
 function removeTodoItem(id) {
   return getAllTodos()
     .then((todos) => {
       const index = findTodoIndex(id, todos);
-      if (index===-1)return 'Todo is not found';
+      if (index===-1)return 'Todo item not found';
       const result = [...todos];
 
       const removedItems = result.splice(index, 1);
@@ -161,22 +135,6 @@ function removeTodoItem(id) {
       return saveAllTodos(result).then(() => removedItems.length);
     });
 }
-
-// function likeTodoItem(id, change) {
-//   return getAllTodos()
-//     .then((todos) => {
-//       const index = findTodoIndex(id, todos);
-//       const result = [...todos];
-//       const target = todos[index];
-//       if (target != undefined) {
-//         result.splice(index, 1, updateTodo(change, target));
-//         console.log("Like result: " + result[index].isLiked);
-//         return  saveAllTodos(result);
-//       }else {
-//         return 'this item not exist';
-//       }
-//     })
-// }
 
 
 const createQuestions = [
@@ -311,7 +269,7 @@ program
   .alias('ul')
   .description('Like TODO item')
   .action((id) => {
-    likeTodoItem(id, {isLiked:false})
+    updateTodoItem(id, {isLiked:false})
     //.then(print)
       .catch((e) => {
         throw e;
